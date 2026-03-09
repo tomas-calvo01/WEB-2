@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>TechStore</title>
+<title>TechMarket</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
@@ -19,7 +19,7 @@ font-family:'Poppins',sans-serif;
 }
 
 body{
-background:#f5f5f5;
+background:#f4f4f4;
 }
 
 /* NAVBAR */
@@ -27,8 +27,8 @@ background:#f5f5f5;
 nav{
 background:#ffe600;
 display:flex;
-justify-content:space-between;
 align-items:center;
+justify-content:space-between;
 padding:15px 60px;
 box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
@@ -50,49 +50,88 @@ border:none;
 border-radius:6px;
 }
 
+.menu{
+display:flex;
+align-items:center;
+gap:20px;
+}
+
 .menu a{
-margin-left:20px;
 text-decoration:none;
 color:#333;
 font-weight:500;
 }
 
+.cart{
+background:#3483fa;
+color:white;
+padding:8px 12px;
+border-radius:6px;
+}
+
 /* HERO */
 
 .hero{
-height:400px;
-background:linear-gradient(120deg,#3483fa,#00a2ff);
+height:420px;
+background:linear-gradient(120deg,#3483fa,#00c6ff);
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-color:white;
 text-align:center;
+color:white;
 }
 
 .hero h1{
-font-size:48px;
+font-size:50px;
 margin-bottom:10px;
 }
 
 .hero p{
-font-size:18px;
+font-size:20px;
 margin-bottom:20px;
 }
 
 .hero button{
-padding:12px 25px;
-border:none;
-border-radius:8px;
 background:#ffe600;
+border:none;
+padding:12px 25px;
+border-radius:8px;
 font-weight:600;
 cursor:pointer;
+transition:0.3s;
+}
+
+.hero button:hover{
+transform:scale(1.05);
+}
+
+/* CATEGORIAS */
+
+.categories{
+display:flex;
+justify-content:center;
+gap:30px;
+padding:40px;
+}
+
+.cat{
+background:white;
+padding:20px 30px;
+border-radius:10px;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+cursor:pointer;
+transition:0.3s;
+}
+
+.cat:hover{
+transform:translateY(-5px);
 }
 
 /* PRODUCTOS */
 
 .products{
-padding:60px;
+padding:40px 60px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:30px;
@@ -101,13 +140,13 @@ gap:30px;
 .card{
 background:white;
 border-radius:10px;
-box-shadow:0 5px 20px rgba(0,0,0,0.08);
 overflow:hidden;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
 transition:0.3s;
 }
 
 .card:hover{
-transform:translateY(-5px);
+transform:translateY(-8px);
 }
 
 .card img{
@@ -121,7 +160,6 @@ padding:20px;
 }
 
 .card-body h3{
-font-size:18px;
 margin-bottom:10px;
 }
 
@@ -129,27 +167,32 @@ margin-bottom:10px;
 color:#00a650;
 font-size:22px;
 font-weight:600;
-margin-bottom:10px;
+margin-bottom:15px;
 }
 
 .buy{
-width:100%;
-padding:10px;
-border:none;
 background:#3483fa;
 color:white;
+border:none;
+padding:10px;
+width:100%;
 border-radius:6px;
 cursor:pointer;
+transition:0.2s;
+}
+
+.buy:hover{
+background:#2968c8;
 }
 
 /* FOOTER */
 
 footer{
+margin-top:40px;
 background:#222;
 color:white;
+padding:40px;
 text-align:center;
-padding:30px;
-margin-top:40px;
 }
 
 /* RESPONSIVE */
@@ -159,12 +202,11 @@ margin-top:40px;
 nav{
 flex-direction:column;
 gap:15px;
-padding:20px;
 }
 
 .search{
-width:100%;
 margin:0;
+width:100%;
 }
 
 .hero h1{
@@ -177,12 +219,11 @@ font-size:32px;
 
 </head>
 
-
 <body>
 
 <nav>
 
-<div class="logo">TechStore</div>
+<div class="logo">TechMarket</div>
 
 <div class="search">
 <input type="text" placeholder="Buscar productos...">
@@ -190,9 +231,9 @@ font-size:32px;
 
 <div class="menu">
 <a href="#">Inicio</a>
-<a href="#">Productos</a>
 <a href="#">Ofertas</a>
 <a href="#">Contacto</a>
+<div class="cart">🛒 <span id="cart-count">0</span></div>
 </div>
 
 </nav>
@@ -200,9 +241,19 @@ font-size:32px;
 
 <section class="hero">
 
-<h1>Bienvenido a TechStore</h1>
-<p>Los mejores productos al mejor precio</p>
-<button>Ver productos</button>
+<h1>Ofertas Tecnológicas</h1>
+<p>Hasta 40% de descuento esta semana</p>
+<button>Comprar ahora</button>
+
+</section>
+
+
+<section class="categories">
+
+<div class="cat">💻 Computadoras</div>
+<div class="cat">📱 Smartphones</div>
+<div class="cat">🎧 Audio</div>
+<div class="cat">🖥️ Monitores</div>
 
 </section>
 
@@ -214,7 +265,7 @@ font-size:32px;
 <div class="card-body">
 <h3>Notebook Gamer</h3>
 <p class="price">$950.000</p>
-<button class="buy">Comprar</button>
+<button class="buy" onclick="addToCart()">Agregar al carrito</button>
 </div>
 </div>
 
@@ -223,7 +274,7 @@ font-size:32px;
 <div class="card-body">
 <h3>Smartphone Pro</h3>
 <p class="price">$520.000</p>
-<button class="buy">Comprar</button>
+<button class="buy" onclick="addToCart()">Agregar al carrito</button>
 </div>
 </div>
 
@@ -232,7 +283,7 @@ font-size:32px;
 <div class="card-body">
 <h3>Auriculares Bluetooth</h3>
 <p class="price">$75.000</p>
-<button class="buy">Comprar</button>
+<button class="buy" onclick="addToCart()">Agregar al carrito</button>
 </div>
 </div>
 
@@ -241,25 +292,7 @@ font-size:32px;
 <div class="card-body">
 <h3>Monitor 4K</h3>
 <p class="price">$310.000</p>
-<button class="buy">Comprar</button>
-</div>
-</div>
-
-<div class="card">
-<img src="https://picsum.photos/400/300?5">
-<div class="card-body">
-<h3>Teclado Mecánico</h3>
-<p class="price">$48.000</p>
-<button class="buy">Comprar</button>
-</div>
-</div>
-
-<div class="card">
-<img src="https://picsum.photos/400/300?6">
-<div class="card-body">
-<h3>Mouse Gamer</h3>
-<p class="price">$35.000</p>
-<button class="buy">Comprar</button>
+<button class="buy" onclick="addToCart()">Agregar al carrito</button>
 </div>
 </div>
 
@@ -268,9 +301,27 @@ font-size:32px;
 
 <footer>
 
-<p>© 2026 TechStore - Todos los derechos reservados</p>
+<p>© 2026 TechMarket - Tienda Online</p>
 
 </footer>
+
+
+<script>
+
+let cart = 0;
+
+function addToCart(){
+
+cart++;
+
+document.getElementById("cart-count").innerText = cart;
+
+alert("Producto agregado al carrito 🛒");
+
+}
+
+</script>
+
 
 </body>
 </html>
