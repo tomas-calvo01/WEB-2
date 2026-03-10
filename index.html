@@ -1,61 +1,166 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
 <meta charset="UTF-8">
-<title>Snake Game</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TechMarket</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
 body{
+background:#f5f5f5;
+}
+
+/* NAVBAR */
+
+nav{
+background:#ffe600;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 50px;
+}
+
+.logo{
+font-size:24px;
+font-weight:600;
+}
+
+.cart{
+background:#3483fa;
+color:white;
+padding:8px 12px;
+border-radius:6px;
+}
+
+/* HERO */
+
+.hero{
+height:300px;
+background:linear-gradient(120deg,#3483fa,#00c6ff);
 display:flex;
 flex-direction:column;
-align-items:center;
 justify-content:center;
-height:100vh;
-background:#111;
+align-items:center;
 color:white;
-font-family:Arial;
 }
 
-canvas{
-background:black;
-border:3px solid #00ff88;
+.hero h1{
+font-size:40px;
 }
 
-h1{
-margin-bottom:10px;
+/* CATEGORIAS */
+
+.categories{
+display:flex;
+justify-content:center;
+gap:30px;
+padding:30px;
 }
 
-#score{
-margin-top:10px;
+.cat{
+background:white;
+padding:15px 25px;
+border-radius:8px;
+cursor:pointer;
+box-shadow:0 4px 10px rgba(0,0,0,0.1);
+transition:0.3s;
+}
+
+.cat:hover{
+transform:translateY(-5px);
+}
+
+/* PRODUCTOS */
+
+.products{
+padding:40px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+}
+
+.card{
+background:white;
+border-radius:10px;
+overflow:hidden;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+cursor:pointer;
+}
+
+.card img{
+width:100%;
+height:200px;
+object-fit:cover;
+}
+
+.card-body{
+padding:15px;
+}
+
+.price{
+color:#00a650;
 font-size:20px;
+font-weight:600;
 }
 
-/* pantalla final */
+/* MODAL */
 
-#gameover{
+.modal{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:black;
+background:rgba(0,0,0,0.6);
 display:none;
-flex-direction:column;
 justify-content:center;
 align-items:center;
 }
 
-#gameover img{
-width:300px;
+.modal-content{
+background:white;
+padding:30px;
 border-radius:10px;
-margin-bottom:20px;
+width:400px;
+text-align:center;
 }
 
-#gameover h2{
-font-size:60px;
-color:red;
+.modal img{
+width:100%;
+margin-bottom:15px;
+}
+
+.buy{
+background:#3483fa;
+color:white;
+border:none;
+padding:10px;
+width:100%;
+border-radius:6px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.close{
+margin-top:10px;
+background:#ddd;
+border:none;
+padding:8px;
+width:100%;
+cursor:pointer;
 }
 
 </style>
@@ -64,131 +169,178 @@ color:red;
 
 <body>
 
-<h1>🐍 Snake Game</h1>
+<nav>
 
-<canvas id="game" width="400" height="400"></canvas>
+<div class="logo">TechMarket</div>
 
-<div id="score">Puntos: 0</div>
+<div class="cart">🛒 <span id="cart">0</span></div>
 
-<div id="gameover">
+</nav>
 
-<img src="foto.png">
+<section class="hero">
 
-<h2>VIRGO</h2>
+<h1>Bienvenido a TechMarket</h1>
+<p>Selecciona una categoría</p>
+
+</section>
+
+<section class="categories">
+
+<div class="cat" onclick="filterProducts('all')">Todos</div>
+<div class="cat" onclick="filterProducts('phones')">📱 Smartphones</div>
+<div class="cat" onclick="filterProducts('pc')">💻 Computadoras</div>
+<div class="cat" onclick="filterProducts('audio')">🎧 Audio</div>
+
+</section>
+
+<section class="products" id="products"></section>
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+<div class="modal-content">
+
+<img id="modal-img">
+
+<h3 id="modal-title"></h3>
+
+<p id="modal-desc"></p>
+
+<p class="price" id="modal-price"></p>
+
+<button class="buy" onclick="addToCart()">Comprar</button>
+
+<button class="close" onclick="closeModal()">Cerrar</button>
+
+</div>
 
 </div>
 
 <script>
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+let cart = 0;
 
-const box = 20;
+let selectedProduct = null;
 
-let snake = [
-{ x:9 * box, y:10 * box }
+const products = [
+
+{
+name:"iPhone 15",
+price:"$1.200.000",
+category:"phones",
+img:"https://picsum.photos/400/300?1",
+desc:"Pantalla OLED, cámara 48MP, chip A16."
+},
+
+{
+name:"Samsung Galaxy S23",
+price:"$980.000",
+category:"phones",
+img:"https://picsum.photos/400/300?2",
+desc:"Pantalla AMOLED 120Hz y cámara profesional."
+},
+
+{
+name:"Notebook Gamer",
+price:"$950.000",
+category:"pc",
+img:"https://picsum.photos/400/300?3",
+desc:"RTX 4060, 16GB RAM."
+},
+
+{
+name:"Auriculares Sony",
+price:"$120.000",
+category:"audio",
+img:"https://picsum.photos/400/300?4",
+desc:"Cancelación de ruido profesional."
+}
+
 ];
 
-let direction = null;
+function displayProducts(list){
 
-let food = {
-x: Math.floor(Math.random()*19+1)*box,
-y: Math.floor(Math.random()*19+1)*box
-};
+const container = document.getElementById("products");
 
-let score = 0;
+container.innerHTML="";
 
-document.addEventListener("keydown", changeDirection);
+list.forEach(p=>{
 
-function changeDirection(event){
+container.innerHTML+=`
 
-if(event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
-if(event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
-if(event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
-if(event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+<div class="card" onclick="showProduct('${p.name}')">
 
-}
+<img src="${p.img}">
 
-function collision(head,array){
+<div class="card-body">
 
-for(let i=0;i<array.length;i++){
-if(head.x === array[i].x && head.y === array[i].y){
-return true;
-}
-}
+<h3>${p.name}</h3>
 
-return false;
+<p class="price">${p.price}</p>
+
+</div>
+
+</div>
+
+`;
+
+});
 
 }
 
-function draw(){
+function filterProducts(cat){
 
-ctx.fillStyle="black";
-ctx.fillRect(0,0,400,400);
+if(cat==="all"){
 
-for(let i=0;i<snake.length;i++){
-
-ctx.fillStyle = i==0 ? "#00ff88" : "white";
-ctx.fillRect(snake[i].x,snake[i].y,box,box);
-
-}
-
-ctx.fillStyle="red";
-ctx.fillRect(food.x,food.y,box,box);
-
-let snakeX = snake[0].x;
-let snakeY = snake[0].y;
-
-if(direction==="LEFT") snakeX -= box;
-if(direction==="UP") snakeY -= box;
-if(direction==="RIGHT") snakeX += box;
-if(direction==="DOWN") snakeY += box;
-
-if(snakeX === food.x && snakeY === food.y){
-
-score++;
-
-document.getElementById("score").innerText="Puntos: "+score;
-
-food = {
-x: Math.floor(Math.random()*19+1)*box,
-y: Math.floor(Math.random()*19+1)*box
-};
+displayProducts(products);
 
 }else{
 
-snake.pop();
+displayProducts(products.filter(p=>p.category===cat));
 
 }
 
-let newHead = {
-x: snakeX,
-y: snakeY
-};
+}
 
-if(
-snakeX < 0 ||
-snakeY < 0 ||
-snakeX >= 400 ||
-snakeY >= 400 ||
-collision(newHead,snake)
-){
+function showProduct(name){
 
-clearInterval(game);
+selectedProduct = products.find(p=>p.name===name);
 
-/* mostrar pantalla */
+document.getElementById("modal-img").src = selectedProduct.img;
 
-document.getElementById("gameover").style.display="flex";
+document.getElementById("modal-title").innerText = selectedProduct.name;
+
+document.getElementById("modal-desc").innerText = selectedProduct.desc;
+
+document.getElementById("modal-price").innerText = selectedProduct.price;
+
+document.getElementById("modal").style.display="flex";
 
 }
 
-snake.unshift(newHead);
+function closeModal(){
+
+document.getElementById("modal").style.display="none";
 
 }
 
-let game = setInterval(draw,100);
+function addToCart(){
+
+cart++;
+
+document.getElementById("cart").innerText = cart;
+
+alert("Producto agregado al carrito");
+
+closeModal();
+
+}
+
+displayProducts(products);
 
 </script>
 
 </body>
+
 </html>
